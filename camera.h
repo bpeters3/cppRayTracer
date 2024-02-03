@@ -23,7 +23,7 @@ class camera {
     double focus_dist{0};
 
 
-    void render(const hittable& world) {
+    void render(image& _image, const hittable& world) {
         initialize();
 
         std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
@@ -36,7 +36,7 @@ class camera {
                     ray r = get_ray(i, j);
                     pixel_color += ray_color(r, max_depth, world);
                 }
-                write_color(std::cout, pixel_color,samples_per_pixel);
+                write_color(_image, pixel_color, samples_per_pixel, i, j);
             }
         }
 

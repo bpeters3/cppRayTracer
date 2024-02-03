@@ -27,16 +27,20 @@ class image{
         }
     }
 
-    void write_pixel_next(const uint8_t& red, const uint8_t& blue, const uint8_t& green){
-        image_file[image_h_idx][image_w_idx] = {red,blue,green};
+    void write_pixel_next(const pixel& pix_write){
+        image_file[image_h_idx][image_w_idx] = pix_write;
     }
 
-    void write_pixel_range(int h_low, int w_low, int h_high, int w_high,const uint8_t& red, const uint8_t& blue, const uint8_t& green){
+    void write_pixel_idx(int width, int height, const pixel& pix_write){
+        image_file[height][width] = pix_write;
+    }
+
+    void write_pixel_range(int h_low, int w_low, int h_high, int w_high,const pixel& pix_write){
         for(int j{h_low};j<h_high;j++){
             for(int i{w_low};i<w_high;i++){
-                image_file[j][i].red    = red;
-                image_file[j][i].blue   = blue;
-                image_file[j][i].green  = green;
+                image_file[j][i].red    = pix_write.red;
+                image_file[j][i].blue   = pix_write.blue;
+                image_file[j][i].green  = pix_write.green;
             }
         }
     }
@@ -45,6 +49,15 @@ class image{
         return image_file[height][width];
     }
 
+    void output_image(std::ostream &out){
+        for (int j = 0; j < image_height; ++j) {
+            for (int i = 0; i < image_width; ++i) {
+                out << static_cast<int>(image_file[j][i].red) << ' '
+                    << static_cast<int>(image_file[j][i].blue) << ' '
+                    << static_cast<int>(image_file[j][i].green) << '\n';
+            }
+        }
+    }
     private:
         int image_width;
         int image_height;
