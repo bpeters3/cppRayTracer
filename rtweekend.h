@@ -6,6 +6,8 @@
 #include <limits>
 #include <memory>
 
+#include <future>
+
 using std::shared_ptr;
 using std::make_shared;
 using std::sqrt;

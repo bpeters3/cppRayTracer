@@ -8,9 +8,9 @@
 using std::vector;
 
 struct pixel{
-    uint8_t red{};
-    uint8_t blue{};
-    uint8_t green{};
+    int red{};
+    int blue{};
+    int green{};
 };
 
 class image{
@@ -50,11 +50,14 @@ class image{
     }
 
     void output_image(std::ostream &out){
+        
+        std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
         for (int j = 0; j < image_height; ++j) {
             for (int i = 0; i < image_width; ++i) {
-                out << static_cast<int>(image_file[j][i].red) << ' '
-                    << static_cast<int>(image_file[j][i].blue) << ' '
-                    << static_cast<int>(image_file[j][i].green) << '\n';
+                out << image_file[j][i].red << ' '
+                    << image_file[j][i].blue << ' '
+                    << image_file[j][i].green << '\n';
             }
         }
     }
