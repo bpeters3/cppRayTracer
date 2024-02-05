@@ -24,14 +24,32 @@ class camera {
 
 
     void render(image& _image, const hittable& world) {
+
         initialize();
 
-        std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+        std::vector<std::future<void>> render_Futures;
+        int thread{};
+        const int numThreads{4};
 
-        for(int i{};i<4;i++)
-            render_area(_image, world, {0,image_width}, {i*(image_height/4),((i+1)*(image_height/4))});
+        auto renderChunks = [this,&_image,&world,numThreads](int thread){
+            // Splits camera perspective into (numThreads) equal sized chunks, along the height ais
+            for (int j = thread*(image_height)/numThreads; j < ((thread+1)*(image_height))/numThreads; j++) {
+                for (int i = 0; i < image_width; i++) {
+                    color pixel_color(0,0,0);
+                    for (int sample = 0; sample < samples_per_pixel; ++sample) {
+                        ray r = get_ray(i, j);
+                        pixel_color += ray_color(r, max_depth, world);
+                    }
+                    write_color(_image, pixel_color, samples_per_pixel, i, j);
+                }
+            }
+        };
 
-        std::clog << "\rDone.                 \n";
+        // Splits rendering across threads
+        for(thread=0;thread < numThreads;thread++)
+            render_Futures.push_back(std::async(std::launch::async,renderChunks,thread));        
+        
+        std::clog << "\rProcessing..." << std::flush;
     }
 
     private:
@@ -43,7 +61,7 @@ class camera {
     vec3   pixel_delta_v;  // Offset to pixel below
     vec3   u, v, w;
 
-    void render_area(image& _image, const hittable& world, std::pair<int,int> _width, std::pair<int,int> _height){
+    [[deprecated]] void render_area(image& _image, const hittable& world, std::pair<int,int> _width, std::pair<int,int> _height){
         for (int j = _height.first; j < _height.second; j++) {
             std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = _width.first; i < _width.second; i++) {

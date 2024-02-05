@@ -6,21 +6,12 @@
 #include "material.h"
 #include "sphere.h"
 #include "image.h"
+#include "timer.h"
 
-// color ray_color(const ray& r, const hittable& world){
-//     hit_record rec;
-//         if(world.hit(r,interval(0,infinity),rec)){
-//             return 0.5 * (rec.normal + color(1,1,1));
-//         }
-
-//     vec3 unit_direction = unit_vector(r.direction());
-//     auto a = 0.5 * (unit_direction.y() + 1.0);
-//     return (1.0 - a)*color(1.0,1.0,1.0) + a*color(0.5, 0.7, 1.0);
-// }
 using std::make_shared;
 
 int main(){
-
+    Timer benchmark_timer;
     hittable_list world;
     auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
     world.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material));
@@ -66,7 +57,7 @@ int main(){
 
     cam.aspect_ratio      = 16.0 / 9.0;
     cam.image_width       = 500;
-    cam.samples_per_pixel = 10;
+    cam.samples_per_pixel = 5;
     cam.max_depth         = 50;
 
 
@@ -83,7 +74,7 @@ int main(){
     image image_instance(cam.image_width,static_cast<int>(cam.image_width / cam.aspect_ratio));
 
     cam.render(image_instance,world);
-    
+    std::clog << "\rDone.                 \n";
     image_instance.write_pixel_range(90,90,200,200,{120,0,0});
     image_instance.output_image(std::cout);
 }
