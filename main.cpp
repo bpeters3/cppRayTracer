@@ -75,6 +75,6 @@ int main(){
 
     cam.render(image_instance,world);
     std::clog << "\rDone.                 \n";
-    image_instance.write_pixel_range(90,90,200,200,{120,0,0});
-    image_instance.output_image(std::cout);
+    //image_instance.write_pixel_range(90,90,200,200,{120,0,0});
+    image_instance.output_image("image2");
 }

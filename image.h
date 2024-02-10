@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <vector>
+#include <fstream>
+#include <filesystem>
 #include "interval.h"
 
 using std::vector;
@@ -49,15 +51,18 @@ class image{
         return image_file[height][width];
     }
 
-    void output_image(std::ostream &out){
-        
-        std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    void output_image(std::string filename){
+        std::string filename_ext = filename;
+        filename_ext.append(".ppm");
+        std::filesystem::remove(filename_ext);
+        std::ofstream image_ppm(filename_ext);
+        image_ppm << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
         for (int j = 0; j < image_height; ++j) {
             for (int i = 0; i < image_width; ++i) {
-                out << image_file[j][i].red << ' '
-                    << image_file[j][i].blue << ' '
-                    << image_file[j][i].green << '\n';
+                image_ppm << image_file[j][i].red   << ' '
+                          << image_file[j][i].blue  << ' '
+                          << image_file[j][i].green << '\n';
             }
         }
     }
